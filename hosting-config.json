@@ -1,0 +1,31 @@
+{
+  "version": "1",
+  "services": [
+    {
+      "name": "backend",
+      "type": "backend",
+      "path": "backend",
+      "env": "node",
+      "buildCommand": "npm install",
+      "startCommand": "npm start",
+      "ports": [5000]
+    },
+    {
+      "name": "frontend",
+      "type": "frontend",
+      "path": "frontend",
+      "buildCommand": "npm install && npm run build",
+      "publish": "dist",
+      "routes": [
+        {
+          "src": "/_/backend/(.*)",
+          "dest": "http://backend:5000/api/$1"
+        },
+        {
+          "src": "/(.*)",
+          "dest": "/index.html"
+        }
+      ]
+    }
+  ]
+}

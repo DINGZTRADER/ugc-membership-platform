@@ -157,8 +157,11 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// --- EXPRESS ROUTER CONFIGURATION ---
+const router = express.Router();
+
 // --- AUTH ROUTES ---
-app.post('/api/auth/register', async (req, res) => {
+router.post('/api/auth/register', async (req, res) => {
   const { username, email, password, isCreator } = req.body;
   if (!username || !email || !password) {
     return res.status(400).json({ error: 'Username, email, and password are required' });
@@ -250,7 +253,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-app.post('/api/auth/login', async (req, res) => {
+router.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
 
@@ -280,7 +283,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-app.get('/api/auth/me', authenticateToken, async (req, res) => {
+router.get('/api/auth/me', authenticateToken, async (req, res) => {
   if (useMockDb) {
     const user = mockDb.users.find(u => u.id === req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -297,7 +300,7 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
 });
 
 // --- CREATOR PROFILE ROUTES ---
-app.get('/api/creators', async (req, res) => {
+router.get('/api/creators', async (req, res) => {
   if (useMockDb) {
     const result = mockDb.creator_profiles.map(profile => {
       const user = mockDb.users.find(u => u.id === profile.user_id);
@@ -321,7 +324,7 @@ app.get('/api/creators', async (req, res) => {
   }
 });
 
-app.get('/api/creators/:id', async (req, res) => {
+router.get('/api/creators/:id', async (req, res) => {
   const creatorId = parseInt(req.params.id);
   if (useMockDb) {
     const profile = mockDb.creator_profiles.find(cp => cp.user_id === creatorId);
@@ -347,7 +350,7 @@ app.get('/api/creators/:id', async (req, res) => {
   }
 });
 
-app.put('/api/creators/profile', authenticateToken, async (req, res) => {
+router.put('/api/creators/profile', authenticateToken, async (req, res) => {
   if (!req.user.isCreator) return res.status(403).json({ error: 'Only creators can update their profiles' });
   const { display_name, bio, avatar_url, banner_url, tiers } = req.body;
 
@@ -414,7 +417,7 @@ app.put('/api/creators/profile', authenticateToken, async (req, res) => {
 });
 
 // --- SUBSCRIPTION ROUTES ---
-app.post('/api/subscriptions/subscribe', authenticateToken, async (req, res) => {
+router.post('/api/subscriptions/subscribe', authenticateToken, async (req, res) => {
   const { creator_id, tier_id } = req.body;
   if (!creator_id || !tier_id) return res.status(400).json({ error: 'Creator ID and Tier ID are required' });
 
@@ -473,7 +476,7 @@ app.post('/api/subscriptions/subscribe', authenticateToken, async (req, res) => 
 });
 
 // Retrieve logged-in user's active subscriptions
-app.get('/api/subscriptions/active', authenticateToken, async (req, res) => {
+router.get('/api/subscriptions/active', authenticateToken, async (req, res) => {
   if (useMockDb) {
     const list = mockDb.subscriptions.filter(s => s.subscriber_id === req.user.id && s.status === 'active');
     const enriched = list.map(s => {
@@ -505,7 +508,7 @@ app.get('/api/subscriptions/active', authenticateToken, async (req, res) => {
 });
 
 // --- POST ROUTES ---
-app.get('/api/posts/creator/:creatorId', async (req, res) => {
+router.get('/api/posts/creator/:creatorId', async (req, res) => {
   const creatorId = parseInt(req.params.creatorId);
   const authHeader = req.headers['authorization'];
   let userId = null;
@@ -590,7 +593,7 @@ app.get('/api/posts/creator/:creatorId', async (req, res) => {
   }
 });
 
-app.post('/api/posts', authenticateToken, async (req, res) => {
+router.post('/api/posts', authenticateToken, async (req, res) => {
   if (!req.user.isCreator) return res.status(403).json({ error: 'Only creators can create posts' });
   const { title, body, required_tier_level, image_url } = req.body;
 
@@ -625,7 +628,7 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
 });
 
 // --- ANALYTICS / DASHBOARD ROUTES ---
-app.get('/api/analytics/creator', authenticateToken, async (req, res) => {
+router.get('/api/analytics/creator', authenticateToken, async (req, res) => {
   if (!req.user.isCreator) return res.status(403).json({ error: 'Only creators can view their analytics' });
 
   if (useMockDb) {
@@ -654,6 +657,14 @@ app.get('/api/analytics/creator', authenticateToken, async (req, res) => {
     }
   }
 });
+
+// --- ROUTE ATTACHMENT MOUNTING ---
+app.use('/', router);
+const ROUTE_PREFIX = process.env.NODE_ENV === 'production' ? '/_/backend' : '';
+if (ROUTE_PREFIX) {
+  app.use(ROUTE_PREFIX, router);
+}
+
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
