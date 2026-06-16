@@ -14,24 +14,34 @@ app.use(express.json());
 // --- In-Memory Database Fallback ---
 let useMockDb = false;
 let pool = null;
+let dbCheckPromise = null;
 
 if (process.env.DATABASE_URL) {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
   });
-  pool.query('SELECT NOW()', (err) => {
-    if (err) {
-      console.warn('⚠️ PostgreSQL connection failed. Falling back to In-Memory Mock Database.');
-      useMockDb = true;
-    } else {
+  dbCheckPromise = pool.query('SELECT NOW()')
+    .then(() => {
       console.log('✅ PostgreSQL Connected successfully.');
-    }
-  });
+      useMockDb = false;
+    })
+    .catch((err) => {
+      console.warn('⚠️ PostgreSQL connection failed. Falling back to In-Memory Mock Database:', err.message);
+      useMockDb = true;
+    });
 } else {
   console.log('ℹ️ No DATABASE_URL found. Using In-Memory Mock Database.');
   useMockDb = true;
+  dbCheckPromise = Promise.resolve();
 }
+
+app.use(async (req, res, next) => {
+  if (dbCheckPromise) {
+    await dbCheckPromise;
+  }
+  next();
+});
 
 // --- Mock Database ---
 const mockDb = {

@@ -4,4 +4,10 @@ require('dotenv').config({ path: require('path').join(__dirname, '../backend/.en
 
 const app = require('../backend/app');
 
-module.exports = app;
+module.exports = (req, res) => {
+  if (req.headers['x-matched-path']) {
+    const reqUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    req.url = req.headers['x-matched-path'] + reqUrl.search;
+  }
+  return app(req, res);
+};
