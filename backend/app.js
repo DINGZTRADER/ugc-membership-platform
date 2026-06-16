@@ -228,14 +228,6 @@ router.post('/api/auth/login', async (req, res) => {
   } catch (err) { return res.status(500).json({ error: 'Login failed' }); }
 });
 
-router.get('/api/debug-request', (req, res) => {
-  return res.json({
-    url: req.url,
-    originalUrl: req.originalUrl,
-    headers: req.headers
-  });
-});
-
 router.get('/api/auth/me', authenticateToken, async (req, res) => {
   if (useMockDb) {
     const user = mockDb.users.find(u => u.id === req.user.id);
