@@ -51,7 +51,7 @@ export default function Register({ setAuth }) {
       <div className="glass-panel" style={{ padding: '40px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h2 style={{ fontSize: '28px', color: '#fff', marginBottom: '8px' }}>Create Account</h2>
-          <p style={{ color: 'hsl(var(--text-secondary))' }}>Join Horizon UGC today</p>
+          <p style={{ color: 'hsl(var(--text-secondary))' }}>Join Uganda Golf Club today</p>
         </div>
 
         {error && (
@@ -150,8 +150,8 @@ export default function Register({ setAuth }) {
               {isCreator && <Shield size={14} color="#fff" />}
             </div>
             <div>
-              <div style={{ fontWeight: '600', color: '#fff', fontSize: '15px' }}>Register as a Content Creator</div>
-              <div style={{ fontSize: '13px', color: 'hsl(var(--text-secondary))' }}>Publish exclusive posts and set membership pricing tiers.</div>
+              <div style={{ fontWeight: '600', color: '#fff', fontSize: '15px' }}>Register as a Club Professional / Coach</div>
+              <div style={{ fontSize: '13px', color: 'hsl(var(--text-secondary))' }}>Publish club updates, tee times, pro lessons, and manage custom membership/coaching tiers.</div>
             </div>
           </div>
 

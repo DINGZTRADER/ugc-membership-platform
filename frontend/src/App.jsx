@@ -50,25 +50,25 @@ function AppContent({ auth, setAuth }) {
             <Sparkles size={20} color="#fff" />
           </div>
           <span style={{ fontFamily: 'Outfit', fontWeight: '800', fontSize: '20px', letterSpacing: '-0.02em', background: 'linear-gradient(to right, #fff, hsl(var(--text-secondary)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            HORIZON
+            UGANDA GOLF CLUB
           </span>
         </Link>
 
         {/* Action Links */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: '600', color: 'hsl(var(--text-secondary))' }} className="nav-link">
-            <Compass size={16} /> Explore Creators
+            <Compass size={16} /> Club Directory
           </Link>
 
           {auth ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {auth.isCreator ? (
                 <Link to="/creator-dashboard" className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
-                  <Shield size={14} /> Creator Hub
+                  <Shield size={14} /> Admin Hub
                 </Link>
               ) : (
                 <Link to="/subscriber-dashboard" className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
-                  <UserCheck size={14} /> My Subscriptions
+                  <UserCheck size={14} /> Member Dashboard
                 </Link>
               )}
               
@@ -108,7 +108,7 @@ function AppContent({ auth, setAuth }) {
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid hsl(var(--border-glass))', padding: '32px 16px', marginTop: '80px', textAlign: 'center', fontSize: '13px', color: 'hsl(var(--text-muted))' }}>
-        <div>© 2026 Horizon UGC Inc. All rights reserved. Built with glassmorphic React design.</div>
+        <div>© 2026 Uganda Golf Club (UGC). All rights reserved. Premium member platform.</div>
       </footer>
     </div>
   );

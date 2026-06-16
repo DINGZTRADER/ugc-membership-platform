@@ -61,24 +61,95 @@ let transactionIdCounter = 1;
 
 function seedMockDb() {
   const passwordHash = bcrypt.hashSync('password123', 8);
-  const creators = [
-    { username: 'cyber_artist', email: 'cyber@art.com', display_name: 'Cyber Horizon Studio', bio: 'Creating next-gen sci-fi digital art, neon interfaces, and futuristic 3D assets.', avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80', banner: 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=800&auto=format&fit=crop&q=80' },
-    { username: 'lofi_vibes', email: 'lofi@vibes.com', display_name: 'Lofi Horizon', bio: 'Chill beats to study, relax, and code to. Monthly music packs and exclusive loops.', avatar: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80', banner: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&auto=format&fit=crop&q=80' }
+  
+  // UGC Pro Shop Seed
+  const proShopId = userIdCounter++;
+  mockDb.users.push({ id: proShopId, username: 'ugc_pro_shop', email: 'proshop@ugandagolfclub.com', password_hash: passwordHash, is_creator: true, created_at: new Date() });
+  mockDb.creator_profiles.push({ 
+    user_id: proShopId, 
+    display_name: 'UGC Pro Shop', 
+    bio: 'Official Uganda Golf Club Pro Shop. Premium clubs, balls, apparel, and golf gear. Order directly and view active member catalogs.', 
+    avatar_url: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=150&auto=format&fit=crop&q=80', 
+    banner_url: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&auto=format&fit=crop&q=80' 
+  });
+  const proShopTiers = [
+    { name: 'Green Tee Pack', price: 9.99, level: 1, description: 'Access to members-only newsletter and 5% discount on balls.' },
+    { name: 'Fairway Club', price: 29.99, level: 2, description: '10% store discount, priority reservation of new golf club sets.' },
+    { name: 'Eagle VIP Patron', price: 99.99, level: 3, description: 'Unlimited golf cart rentals, premium glove, and custom club fitting session.' }
   ];
+  proShopTiers.forEach(t => mockDb.subscription_tiers.push({ id: tierIdCounter++, creator_id: proShopId, ...t }));
+  
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: proShopId, 
+    title: 'Welcome to the UGC Pro Shop Online Portal', 
+    body: 'We are excited to launch our online order system for Uganda Golf Club members. You can now browse our catalog and charge orders directly to your member account.', 
+    required_tier_level: 0, 
+    image_url: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000 * 3) 
+  });
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: proShopId, 
+    title: '[Green Tee] New Titleist Pro V1 Balls in Stock', 
+    body: 'A fresh shipment of Titleist Pro V1 balls has just arrived. Members in this tier get a priority discount. Place your orders today!', 
+    required_tier_level: 1, 
+    image_url: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=500&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000 * 2) 
+  });
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: proShopId, 
+    title: '[Fairway Club] Exclusive Callaway Driver Preview', 
+    body: 'The new Callaway Paradym Ai Smoke drivers have arrived. Members in this tier can pre-book a custom fitting demo starting this Saturday.', 
+    required_tier_level: 2, 
+    image_url: 'https://images.unsplash.com/photo-1592919505780-303950717480?w=500&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000) 
+  });
 
-  creators.forEach(c => {
-    const uId = userIdCounter++;
-    mockDb.users.push({ id: uId, username: c.username, email: c.email, password_hash: passwordHash, is_creator: true, created_at: new Date() });
-    mockDb.creator_profiles.push({ user_id: uId, display_name: c.display_name, bio: c.bio, avatar_url: c.avatar, banner_url: c.banner });
-    const tiers = [
-      { name: 'Bronze Explorer', price: 4.99, level: 1, description: 'Access to general feed and subscriber-only newsletter.' },
-      { name: 'Silver Curator', price: 9.99, level: 2, description: 'Bronze perks + monthly high-quality wallpapers or audio downloads.' },
-      { name: 'Gold VIP', price: 24.99, level: 3, description: 'Full access to all source files, raw loops, and direct Q&A priority.' }
-    ];
-    tiers.forEach(t => mockDb.subscription_tiers.push({ id: tierIdCounter++, creator_id: uId, ...t }));
-    mockDb.posts.push({ id: postIdCounter++, creator_id: uId, title: 'Welcome to my creative space!', body: 'Hey everyone! This is a public post welcoming you all to my membership page. I will be sharing updates, BTS, and exclusive assets here. Stay tuned!', required_tier_level: 0, image_url: c.banner, created_at: new Date(Date.now() - 86400000 * 3) });
-    mockDb.posts.push({ id: postIdCounter++, creator_id: uId, title: '[Bronze Exclusive] Secret Project Sneak Peek', body: "Here's a sneak peek of the upcoming project. The moodboard centers on cyberpunk rain streets and holographic billboards. Thanks for being a supporter!", required_tier_level: 1, image_url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop&q=80', created_at: new Date(Date.now() - 86400000 * 2) });
-    mockDb.posts.push({ id: postIdCounter++, creator_id: uId, title: '[Silver Exclusive] Asset Pack Download', body: 'The new asset pack is officially live! Download link: https://example.com/download-drive-link-xyz. Hope you create something amazing!', required_tier_level: 2, image_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&auto=format&fit=crop&q=80', created_at: new Date(Date.now() - 86400000) });
+  // Coach Sam Seed
+  const coachSamId = userIdCounter++;
+  mockDb.users.push({ id: coachSamId, username: 'pro_coach_sam', email: 'sam@ugandagolfclub.com', password_hash: passwordHash, is_creator: true, created_at: new Date() });
+  mockDb.creator_profiles.push({ 
+    user_id: coachSamId, 
+    display_name: 'Coach Samuel Okello', 
+    bio: 'Head Golf Professional at Uganda Golf Club. Weekly swing tips, custom training videos, and tournament prep tips.', 
+    avatar_url: 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=150&auto=format&fit=crop&q=80', 
+    banner_url: 'https://images.unsplash.com/photo-1592919505780-303950717480?w=800&auto=format&fit=crop&q=80' 
+  });
+  const coachSamTiers = [
+    { name: 'Ordinary Swing Member', price: 14.99, level: 1, description: 'Weekly instructional newsletters and group tip videos.' },
+    { name: 'Birdie Masterclass', price: 49.99, level: 2, description: 'Access to masterclass video vault and personal swing review once a month.' },
+    { name: 'Championship VIP', price: 199.99, level: 3, description: 'Weekly 1-on-1 private video analysis and direct chat access.' }
+  ];
+  coachSamTiers.forEach(t => mockDb.subscription_tiers.push({ id: tierIdCounter++, creator_id: coachSamId, ...t }));
+
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: coachSamId, 
+    title: 'Pre-Shot Routine Basics', 
+    body: 'Establishing a consistent pre-shot routine is the first step to shooting lower scores. Stand behind the ball, pick an intermediate target, and take two practice swings focusing on tempo.', 
+    required_tier_level: 0, 
+    image_url: 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=800&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000 * 3) 
+  });
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: coachSamId, 
+    title: '[Ordinary Swing] How to Fix Your Slice Instantly', 
+    body: 'A slice is usually caused by an open clubface relative to the swing path. Try this simple grip tweak to close the clubface at impact and hit straight draws.', 
+    required_tier_level: 1, 
+    image_url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000 * 2) 
+  });
+  mockDb.posts.push({ 
+    id: postIdCounter++, 
+    creator_id: coachSamId, 
+    title: '[Birdie Masterclass] Complete Short Game Drills Sheet', 
+    body: 'Here is the master drills sheet. Practice these three specific chipping drills for 20 minutes a day to lower your handicap and save strokes.', 
+    required_tier_level: 2, 
+    image_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&auto=format&fit=crop&q=80', 
+    created_at: new Date(Date.now() - 86400000) 
   });
 }
 seedMockDb();

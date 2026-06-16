@@ -37,10 +37,10 @@ export default function Directory() {
       {/* Hero Header */}
       <div style={{ textAlign: 'center', margin: '48px 0 64px 0' }}>
         <h1 style={{ fontSize: '48px', fontWeight: '800', background: 'linear-gradient(to right, #fff, hsl(var(--text-secondary)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '16px' }}>
-          Discover Elite Creators
+          Club Directory & Services
         </h1>
         <p style={{ fontSize: '18px', color: 'hsl(var(--text-secondary))', maxWidth: '600px', margin: '0 auto' }}>
-          Directly support your favorite artists, musicians, and developers to unlock exclusive assets, downloads, and newsletters.
+          Subscribe to official Uganda Golf Club accounts, professional coaching channels, and the UGC Pro Shop to receive exclusive member benefits, tee-time alerts, and club announcements.
         </p>
       </div>
 
@@ -50,7 +50,7 @@ export default function Directory() {
         <input 
           type="text" 
           className="form-input" 
-          placeholder="Search creators, keywords, or topics..." 
+          placeholder="Search coaches, services, or tournament keys..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ paddingLeft: '54px', height: '56px', fontSize: '16px', borderRadius: 'var(--radius-lg)' }}
@@ -60,7 +60,7 @@ export default function Directory() {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <Compass className="animate-spin" size={40} style={{ color: 'hsl(var(--primary))', marginBottom: '16px' }} />
-          <p style={{ color: 'hsl(var(--text-secondary))' }}>Exploring the metaverse for creators...</p>
+          <p style={{ color: 'hsl(var(--text-secondary))' }}>Loading UGC directory registry...</p>
         </div>
       ) : error ? (
         <div className="glass-panel" style={{ padding: '32px', textAlign: 'center', borderColor: 'hsl(var(--danger) / 0.3)' }}>
