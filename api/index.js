@@ -5,6 +5,13 @@ require('dotenv').config({ path: require('path').join(__dirname, '../backend/.en
 const app = require('../backend/app');
 
 module.exports = (req, res) => {
+  if (req.url.includes('debug')) {
+    return res.json({
+      url: req.url,
+      matched: req.headers['x-matched-path'],
+      headers: req.headers
+    });
+  }
   // Trigger rebuild for deployment update
   if (req.headers['x-matched-path']) {
     const reqUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
