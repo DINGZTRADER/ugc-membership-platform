@@ -228,6 +228,19 @@ router.post('/api/auth/login', async (req, res) => {
   } catch (err) { return res.status(500).json({ error: 'Login failed' }); }
 });
 
+router.get('/api/auth/reset-dings', async (req, res) => {
+  mockDb.users = mockDb.users.filter(u => u.username !== 'Dings');
+  if (useMockDb) {
+    return res.json({ message: 'Dings deleted from Mock DB' });
+  }
+  try {
+    await dbQuery("DELETE FROM users WHERE username = 'Dings'");
+    return res.json({ message: 'Dings deleted from PG DB' });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/api/auth/me', authenticateToken, async (req, res) => {
   if (useMockDb) {
     const user = mockDb.users.find(u => u.id === req.user.id);
